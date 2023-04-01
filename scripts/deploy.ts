@@ -1,19 +1,18 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  const APP_ID = `0x11b1de449c6c4adb0b5775b3868b28b3`;
+  const GROUP_ID = `0x0cc0c43792cec360c9aee6af04acc22b`;
 
-  const lockedAmount = ethers.utils.parseEther("0.001");
+  const ZkBallotBox = await ethers.getContractFactory("ZkBallotBox");
+  const contract = await ZkBallotBox.deploy(GROUP_ID, APP_ID);
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  await contract.deployed();
 
-  await lock.deployed();
-
-  console.log(
-    `Lock with ${ethers.utils.formatEther(lockedAmount)}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+  console.log(`
+      ZkBallotBox(appId=${APP_ID}, groupId=${GROUP_ID})
+      deployed to ${contract.address}
+  `);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
